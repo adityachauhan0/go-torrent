@@ -1,6 +1,7 @@
 # Go-Torrent
 
 A modular BitTorrent client implementation in Go, following the BEP 3 specification.
+<img width="983" height="442" alt="image" src="https://github.com/user-attachments/assets/e065e5a1-b81c-4ff6-8dbb-a66465e98950" />
 
 ## Features
 
