@@ -5,16 +5,19 @@ A modular BitTorrent client implementation in Go, following the BEP 3 specificat
 
 ## Features
 
+- **Magnet Link Support**: Full implementation of BEP 9 (Metadata Exchange) and BEP 5 (DHT) for magnet downloads.
+- **Modern Web UI**: A futuristic, interactive dashboard built with React, Vite, and Three.js.
+- **Real-Time Stats**: Live monitoring of download/upload speeds, active peers, and progress.
+- **File Upload**: Support for uploading `.torrent` files directly via the UI.
 - **Bencode Parsing**: Robust encoder/decoder for bencoded data.
 - **Torrent Parsing**: Support for single and multi-file torrents.
-- **Tracker Communication**: HTTP tracker support with compact peer lists.
-- **Peer Wire Protocol**: Full implementation of the peer protocol (Handshake, Bitfield, Choke/Unchoke, Interested/Not Interested, Request, Piece).
-- **Pipelining**: Efficient piece downloading with request pipelining.
-- **Modular Design**: Clean separation of concerns (Peer, Client, Tracker, Torrent packages).
+- **Tracker Communication**: HTTP and UDP tracker support.
+- **Peer Wire Protocol**: Full implementation (Handshake, Bitfield, Choke/Unchoke, Interested, Request, Piece).
 
 ## Prerequisites
 
 - Go 1.25 or later
+- Node.js & npm (for Web UI)
 
 ## Installation
 
@@ -24,49 +27,49 @@ A modular BitTorrent client implementation in Go, following the BEP 3 specificat
    cd go-torrent
    ```
 
-2. Build the client:
+2. Build the backend:
    ```bash
    go mod tidy
    go build -o torrent-client ./cmd/client
    ```
 
+3. Setup the Frontend:
+   ```bash
+   cd web
+   npm install
+   npm run build
+   cd ..
+   ```
+
 ## Usage
 
-Run the client by providing the path to a `.torrent` file and an output directory:
+### Web Interface (Recommended)
+
+Start the server:
+```bash
+./torrent-client serve --port 8080
+```
+Then open `http://localhost:5173` (if running dev server) or serve the static files (if configured).
+*Note: The current dev setup requires running `npm run dev` in the `web/` directory parallel to the backend.*
+
+### CLI Mode
+
+Run the client by providing the path to a `.torrent` file:
 
 ```bash
 ./torrent-client <path_to_torrent_file> <output_directory>
 ```
-
-### Example
-
+Or for magnet links:
 ```bash
-./torrent-client ubuntu.iso.torrent ./downloads
+./torrent-client magnet "<magnet_link>" <output_directory>
 ```
-
-## Project Structure
-
-- `cmd/client/`: Application entry point.
-- `pkg/bencode/`: Bencode encoding and decoding.
-- `pkg/torrent/`: .torrent file parsing and structures.
-- `pkg/tracker/`: Tracker communication logic.
-- `pkg/peer/`: Peer wire protocol implementation.
-- `pkg/client/`: Download orchestration and file writing.
-- `pkg/p2p/`: Network connection helpers.
-- `pkg/bitfield/`: Bitfield manipulation utilities.
-
-## Documentation
-For a detailed guide on the codebase, implementation timeline, and key concepts, see [documentation.md](documentation.md).
 
 ## Status
 
-This is a functional implementation of the core BitTorrent protocol. It currently supports:
-- Leeching (downloading)
-- Seeding (uploading)
-- Standard HTTP Trackers
-- UDP Trackers (BEP 15)
-- Bitfield/Have Broadcasting
+This project has evolved into a fully functional BitTorrent client with:
+- [x] Standard HTTP & UDP Trackers
+- [x] DHT (Distributed Hash Table) for peer discovery
+- [x] Magnet Link Support (Metadata Exchange)
+- [x] Modern Web Dashboard
+- [x] File Uploads
 
-Future improvements:
-- DHT implementation
-- Magnet links

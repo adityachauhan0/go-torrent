@@ -1,0 +1,18 @@
+# Binaries
+torrent-client
+
+# Logs
+*.log
+
+# Downloads
+torrents/
+*.torrent
+A Very Jonas Christmas Movie (2025) [720p] [WEBRip] [YTS.MX]
+Whitmer Thomas The Golden One (2020) [720p] [WEBRip] [YTS.LT]
+
+# Node
+web/node_modules/
+web/dist/
+
+# OS
+.DS_Store

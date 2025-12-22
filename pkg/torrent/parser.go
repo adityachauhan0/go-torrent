@@ -25,19 +25,19 @@ func ParseReader(r io.Reader) (*TorrentFile, error) {
 	// or we can decode and then re-encode the info dictionary to hash it.
 	// For simplicity and correctness, let's decode the generic map first to extract raw info bytes if possible,
 	// OR, we can just use our specialized decoder if we add struct tags support.
-	
+
 	// Since our simple bencode package (currently) returns map[string]interface{} for dicts,
 	// we have two options:
 	// 1. Use reflection to map the map[string]interface{} to the struct (like encoding/json).
 	// 2. Manual mapping.
 	// 3. Update bencode package to support Unmarshal into structs.
-	
+
 	// Given the task limitation, option 2 is tedious but robust. Option 3 is best.
-	// Let's rely on the generic Decode and then map manually for now, 
+	// Let's rely on the generic Decode and then map manually for now,
 	// or better, let's IMPROVE the bencode package to support `Unmarshal` in the next step.
 	// For this specific step, I will stick to manual mapping to keep it simple and explicit,
 	// as writing a full reflection-based Unmarshaler might be too much code for one turn.
-	
+
 	val, err := bencode.Decode(r)
 	if err != nil {
 		return nil, err
@@ -49,11 +49,11 @@ func ParseReader(r io.Reader) (*TorrentFile, error) {
 	}
 
 	t := &TorrentFile{}
-	
+
 	if announce, ok := root["announce"].(string); ok {
 		t.Announce = announce
 	}
-	
+
 	// Handle optional fields... (omitted for brevity in initial pass, can add later)
 
 	infoMap, ok := root["info"].(map[string]interface{})
@@ -61,11 +61,11 @@ func ParseReader(r io.Reader) (*TorrentFile, error) {
 		return nil, os.ErrInvalid
 	}
 
-	t.Info, err = parseInfo(infoMap)
+	t.Info, err = ParseInfo(infoMap)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Calculate InfoHash
 	// For this, we need the exact bencoded bytes of the info dictionary.
 	// Since we decoded everything, we don't have the raw bytes easily unless we re-encode.
@@ -81,25 +81,25 @@ func ParseReader(r io.Reader) (*TorrentFile, error) {
 	return t, nil
 }
 
-func parseInfo(m map[string]interface{}) (InfoDictionary, error) {
+func ParseInfo(m map[string]interface{}) (InfoDictionary, error) {
 	info := InfoDictionary{}
-	
+
 	if name, ok := m["name"].(string); ok {
 		info.Name = name
 	}
-	
+
 	if pl, ok := m["piece length"].(int); ok {
 		info.PieceLength = int64(pl)
 	}
-	
+
 	if pieces, ok := m["pieces"].(string); ok {
 		info.Pieces = pieces
 	}
-	
+
 	if length, ok := m["length"].(int); ok {
 		info.Length = int64(length)
 	}
-	
+
 	// Multi-file parsing
 	if files, ok := m["files"].([]interface{}); ok {
 		for _, f := range files {
@@ -121,6 +121,6 @@ func parseInfo(m map[string]interface{}) (InfoDictionary, error) {
 			info.Files = append(info.Files, fileInfo)
 		}
 	}
-	
+
 	return info, nil
 }

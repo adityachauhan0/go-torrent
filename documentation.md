@@ -88,4 +88,11 @@ To understand the code deeply:
 2.  **Look at `downloadWorker` in `pkg/client/downloader.go`**: This is the heart of the concurrency. Notice how it handles state changes (`MsgChoke`) and data flow (`MsgPiece`).
 3.  **Check `pkg/tracker/udp.go`**: See how we manually construct binary packets for UDP. It's very different from the clean HTTP requests in `client.go`.
 
+### Phase 6: Modernization (Magnet & UI)
+15. **Magnet Links** (`pkg/client/magnet_client.go`): Implemented BEP 9 (Metadata Exchange) and BEP 5 (DHT) to download torrents without a .torrent file.
+16. **DHT** (`pkg/dht`): Implemented a Kademlia-based Distributed Hash Table to find peers in a decentralized way.
+17. **Extension Protocol** (`pkg/ut_metadata`): Implemented BEP 10 to support extension handshakes and metadata transfer.
+18. **Web UI** (`web/`): Built a futuristic React-based dashboard with Three.js visualizations (Starfield, Tilt cards).
+19. **HTTP API** (`pkg/server`): Created a REST API to expose client status, add torrents, and stream logs to the frontend.
+
 Happy Hacking!
